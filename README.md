@@ -48,7 +48,6 @@ Fiatjafs incredible <a href="https://github.com/lnbits/lnbits/tree/master/lnbits
 - Download/install latest <a href="https://www.arduino.cc/en/software">Arduino IDE</a>
 - Install ESP32 boards, using <a href="https://docs.espressif.com/projects/arduino-esp32/en/latest/installing.html#installing-using-boards-manager">boards manager</a>
 - Copy <a href="https://github.com/arcbtc/LNURLPoS/tree/main/LNURLPoS/libraries">these libraries</a> into your Arduino IDE library folder
-- Plug in T-Display, from _Tools>Board>ESP32 Boards_ select **TTGO LoRa32 OLED V1**
 
 > _Note: If using MacOS, you will need the CP210x USB to UART Bridge VCP Drivers available here https://www.silabs.com/developers/usb-to-uart-bridge-vcp-drivers_
 
@@ -148,4 +147,3 @@ When that first GET request happens from the wallet, the LNURL server can find t
 
 If the invoice passed to the wallet is paid the customer is given access to the decrypted pin.
 
-<img style="width:40%" src="https://user-images.githubusercontent.com/33088785/136544780-10f19ab3-ee47-4b46-aa40-7d983dbf14a8.png">
