@@ -6,7 +6,6 @@
 #include "FS.h"
 
 #include <string.h>
-#include "qrcode.h"
 #include "Bitcoin.h"
 #include <Hash.h>
 #include <Conversion.h>
@@ -21,9 +20,8 @@ String baseURL = "https://legend.lnbits.com/lnurlpos/api/v1/lnurl/UZsLkBSzdDqEFg
 String key = "UzhUjUGFvEtJRaVSpxxNCa";
 String currency = "USD";
 
-//////////////SLEEP SETTINGS///////////////////
-bool isSleepEnabled = true;
-int sleepTimer = 30; // Time in seconds before the device goes to sleep
+//CHANGE TO HIGHER IF USING TOR
+int QRCodeComplexity = 8;
 
 //////////////VARIABLES///////////////////
 String dataId = "";
@@ -57,9 +55,9 @@ bool isPretendSleeping = false;
 #include "MyFont.h"
 
 #define BIGFONT &FreeMonoBold24pt7b
-#define MIDBIGFONT &FreeMonoBold18pt7b
-#define MIDFONT &FreeMonoBold12pt7b
-#define SMALLFONT &FreeMonoBold9pt7b
+#define MIDBIGFONT &FreeMonoBold24pt7b
+#define MIDFONT &FreeMonoBold18pt7b
+#define SMALLFONT &FreeMonoBold12pt7b
 #define TINYFONT &TomThumb
 
 SHA256 h;
@@ -74,8 +72,8 @@ char maxdig[20];
 void setup(void) {
   M5.begin();
   Wire.begin();
-  pinMode(4,OUTPUT); 
-  digitalWrite(4,HIGH);
+ // pinMode(4,OUTPUT); 
+ // digitalWrite(4,HIGH);
   btStop();
   WiFi.mode(WIFI_OFF);
   h.begin();
@@ -85,64 +83,49 @@ void setup(void) {
     logo();
     delay(3000);
   }
-  else
-  {
-    wakeAnimation();
-  }
   ++bootCount;
   Serial.println("Boot count" + bootCount);
 }
 
 void loop() {
-  digitalWrite(4,HIGH);
+  inputScreen();
   inputs = "";
   settle = false;
-  displaySats();
-  bool cntr = false;
-
-  while (cntr != true){
+  cntr = "1";
+  while (cntr == "1"){
     M5.update();
     get_keypad(); 
-    String key = key_val;
-    if (key != NULL)
-    {
-      isPretendSleeping = false;
-      timeOfLastInteraction = millis();
-      virtkey = String(key);
-      if (virtkey == "#"){
-        makeLNURL();
-        qrShowCode();
-        int counta = 0;
-        while (settle != true){
+    
+    if (M5.BtnA.wasReleased()) {
+      makeLNURL();
+      qrShowCode();
+      M5.update();
+      while (cntr == "1"){
+        M5.update();
+        if (M5.BtnA.wasReleased()) {
+          showPin();
           M5.update();
-          get_keypad(); 
-          String key = key_val;
-          virtkey = String(key);
-          if (virtkey == "*"){
-            timeOfLastInteraction = millis();
-            M5.Lcd.fillScreen(TFT_BLACK);
-            settle = true;
-            cntr = true;
-          }
-          else if (virtkey == "#"){
-            timeOfLastInteraction = millis();
-            showPin();
+          if (M5.BtnB.wasReleased() || M5.BtnC.wasReleased()) {
+            clearScreen();
           }
         }
+        if (M5.BtnB.wasReleased() || M5.BtnC.wasReleased()) {
+          clearScreen();
+        }
       }
-      else if (virtkey == "*")
-      {
-        M5.Lcd.fillScreen(TFT_BLACK);
-        M5.Lcd.setCursor(0, 0);
-        M5.Lcd.setTextColor(TFT_WHITE);
-        key_val = "";
-        inputs = "";
-        nosats = "";
-        virtkey = "";
-        cntr = "2";
-      }
-      displaySats();
     }
+    else if (M5.BtnC.wasReleased()) {
+      clearScreen();
+    }
+    inputs += key_val;
+    temp = inputs.toFloat() / 100;
+    M5.Lcd.fillRect(90, 80, 300, 80, TFT_BLACK);
+    M5.Lcd.setCursor(100, 130);
+    M5.Lcd.setFreeFont(MIDFONT);
+    M5.Lcd.setTextColor(TFT_GREEN, TFT_BLACK);
+    M5.Lcd.println(temp);
+    delay(100);
+    key_val = "";
   }
 }
 
@@ -153,7 +136,6 @@ void get_keypad()
     while (Wire.available()) { 
        uint8_t key = Wire.read();                  // receive a byte as character
        key_val = key;
-
        if(key != 0) {
         if(key >= 0x20 && key < 0x7F) { // ASCII String
           if (isdigit((char)key)){
@@ -170,10 +152,21 @@ void get_keypad()
 
 ///////////DISPLAY///////////////
 
+void clearScreen()
+{
+  M5.Lcd.fillScreen(BLACK);
+  M5.Lcd.setCursor(0, 0);
+  M5.Lcd.setTextColor(TFT_WHITE);
+  key_val = "";
+  inputs = "";  
+  nosats = "";
+  cntr = "0";
+}
+
 void qrShowCode()
 {
   M5.Lcd.fillScreen(BLACK); 
-  M5.Lcd.qrcode(lnurl,45,0,240,14);
+  M5.Lcd.qrcode(lnurl,45,0,240,QRCodeComplexity);
   delay(100);
 }
 
@@ -181,46 +174,28 @@ void showPin()
 {
   M5.Lcd.fillScreen(TFT_BLACK);
   M5.Lcd.setTextColor(TFT_WHITE, TFT_BLACK);
-  M5.Lcd.setFreeFont(SMALLFONT);
-  M5.Lcd.setCursor(30, 25);
-  M5.Lcd.println("PAYMENT PROOF PIN");
-  M5.Lcd.setCursor(60, 80);
-  M5.Lcd.setTextColor(TFT_PURPLE, TFT_BLACK); 
+  M5.Lcd.setFreeFont(MIDFONT);
+  M5.Lcd.setCursor(0, 25);
+  M5.Lcd.println("PROOF PIN");
+  M5.Lcd.setCursor(100, 120);
+  M5.Lcd.setTextColor(TFT_GREEN, TFT_BLACK); 
   M5.Lcd.setFreeFont(BIGFONT);
   M5.Lcd.println(randomPin);
 }
 
-void displaySats()
+void inputScreen()
 {
   M5.Lcd.fillScreen(TFT_BLACK);
   M5.Lcd.setTextColor(TFT_WHITE, TFT_BLACK); // White characters on black background
   M5.Lcd.setFreeFont(MIDFONT);
-  M5.Lcd.setCursor(0, 20);
+  M5.Lcd.setCursor(0, 50);
   M5.Lcd.println("AMOUNT THEN #");
-  M5.Lcd.setCursor(60, 130);
+  M5.Lcd.setCursor(50, 220);
   M5.Lcd.setFreeFont(SMALLFONT);
   M5.Lcd.println("TO RESET PRESS *");
-
-  inputs += virtkey;
-  
   M5.Lcd.setFreeFont(MIDFONT);
-  M5.Lcd.setCursor(0, 80);
+  M5.Lcd.setCursor(0, 130);
   M5.Lcd.print(String(currency) + ":");
-  M5.Lcd.setFreeFont(MIDBIGFONT);
-  M5.Lcd.setTextColor(TFT_GREEN, TFT_BLACK);
-
-  if(currency != "sats")
-  {
-    float amount = float(inputs.toInt()) / 100;
-    M5.Lcd.println(amount);
-  }
-  else
-  {
-    int amount = inputs.toInt();
-    M5.Lcd.println(amount);
-  }
-  delay(50);
-  virtkey = "";
 }
 
 void logo()
@@ -228,12 +203,11 @@ void logo()
   M5.Lcd.fillScreen(TFT_BLACK);
   M5.Lcd.setTextColor(TFT_WHITE, TFT_BLACK); // White characters on black background
   M5.Lcd.setFreeFont(BIGFONT);
-  M5.Lcd.setCursor(7, 70);  // To be compatible with Adafruit_GFX the cursor datum is always bottom left
+  M5.Lcd.setCursor(40, 120);  // To be compatible with Adafruit_GFX the cursor datum is always bottom left
   M5.Lcd.print("LNURLPoS"); // Using tft.print means text background is NEVER rendered
 
-  M5.Lcd.setTextColor(TFT_PURPLE, TFT_BLACK); // White characters on black background
   M5.Lcd.setFreeFont(SMALLFONT);
-  M5.Lcd.setCursor(42, 90);          // To be compatible with Adafruit_GFX the cursor datum is always bottom left
+  M5.Lcd.setCursor(42, 140);          // To be compatible with Adafruit_GFX the cursor datum is always bottom left
   M5.Lcd.print("Powered by LNbits"); // Using tft.print means text background is NEVER rendered
 }
 
@@ -248,63 +222,7 @@ void to_upper(char *arr)
   }
 }
 
-
 void callback(){
-}
-
-/**
- * Awww. Show the go to sleep animation
- */
-void sleepAnimation() {
-    printSleepAnimationFrame("(o.o)", 500);
-    printSleepAnimationFrame("(-.-)", 500);
-    printSleepAnimationFrame("(-.-)z", 250);
-    printSleepAnimationFrame("(-.-)zz", 250);
-    printSleepAnimationFrame("(-.-)zzz", 250);
-    digitalWrite(4,LOW);
-}
-
-void wakeAnimation() {
-    printSleepAnimationFrame("(-.-)", 100);
-    printSleepAnimationFrame("(o.o)", 200);
-    M5.Lcd.fillScreen(TFT_BLACK);
-}
-
-/**
- * Print the line of the animation
- */
-void printSleepAnimationFrame(String text, int wait) {
-  M5.Lcd.fillScreen(TFT_BLACK);
-  M5.Lcd.setCursor(5, 80);
-  M5.Lcd.setTextColor(TFT_WHITE, TFT_BLACK); 
-  M5.Lcd.setFreeFont(BIGFONT);
-  M5.Lcd.println(text);
-  delay(wait);
-}
-
-/**
- * Get the voltage going to the device
- */
-float getInputVoltage() {
-    delay(100);
-    uint16_t v1 = analogRead(34);
-    return ((float)v1 / 4095.0f) * 2.0f * 3.3f * (1100.0f / 1000.0f);
-}
-
-/**
- * Does the device have external or internal power?
- */
-bool isPoweredExternally() {
-  float inputVoltage = getInputVoltage();
-  if(inputVoltage > 4.5)
-  {
-    return true;
-  }
-  else
-  {
-    return false;
-  }
-  
 }
 
 //////////LNURL AND CRYPTO///////////////
