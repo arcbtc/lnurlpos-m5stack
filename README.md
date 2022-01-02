@@ -41,7 +41,7 @@ Fiatjafs incredible <a href="https://github.com/lnbits/lnbits/tree/master/lnbits
 
 - Download/install latest <a href="https://www.arduino.cc/en/software">Arduino IDE</a>
 - Install ESP32 boards, using <a href="https://docs.espressif.com/projects/arduino-esp32/en/latest/installing.html#installing-using-boards-manager">boards manager</a>
-- Copy <a href="https://github.com/arcbtc/LNURLPoS/tree/main/LNURLPoS/libraries">these libraries</a> into your Arduino IDE library folder
+- Copy <a href="https://github.com/arcbtc/lnurlpos-m5stack/tree/main/LNURLPoS-M5Stack/libraries">these libraries</a> into your Arduino IDE library folder
 
 > _Note: If using MacOS, you will need the CP210x USB to UART Bridge VCP Drivers available here https://www.silabs.com/developers/usb-to-uart-bridge-vcp-drivers_
 
