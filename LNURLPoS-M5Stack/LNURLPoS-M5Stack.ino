@@ -16,8 +16,8 @@
 ////////CHANGE! USE LNURLPoS EXTENSION IN LNBITS////////
 ////////////////////////////////////////////////////////
 
-String baseURL = "https://legend.lnbits.com/lnurlpos/api/v1/lnurl/UZsLkBSzdDqEFgc3RAs8rj";
-String key = "UzhUjUGFvEtJRaVSpxxNCa";
+String baseURL = "https://legend.lnbits.com/lnurlpos/api/v1/lnurl/AHexgMN3VJjx6BBdzeNhqN";
+String key = "4HHZjKg4Rb867CbiCD9H7e";
 String currency = "USD";
 
 //CHANGE TO HIGHER IF USING TOR
