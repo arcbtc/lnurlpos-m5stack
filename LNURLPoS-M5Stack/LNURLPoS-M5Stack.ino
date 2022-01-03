@@ -52,14 +52,6 @@ RTC_DATA_ATTR int bootCount = 0;
 long timeOfLastInteraction = millis();
 bool isPretendSleeping = false;
 
-#include "MyFont.h"
-
-#define BIGFONT &FreeMonoBold24pt7b
-#define MIDBIGFONT &FreeMonoBold24pt7b
-#define MIDFONT &FreeMonoBold18pt7b
-#define SMALLFONT &FreeMonoBold12pt7b
-#define TINYFONT &TomThumb
-
 SHA256 h;
 
 //////////////KEYPAD///////////////////
@@ -119,9 +111,8 @@ void loop() {
     }
     inputs += key_val;
     temp = inputs.toFloat() / 100;
-    M5.Lcd.fillRect(90, 80, 300, 80, TFT_BLACK);
     M5.Lcd.setCursor(100, 130);
-    M5.Lcd.setFreeFont(MIDFONT);
+    M5.Lcd.setTextSize(3);
     M5.Lcd.setTextColor(TFT_GREEN, TFT_BLACK);
     M5.Lcd.println(temp);
     delay(100);
@@ -174,12 +165,12 @@ void showPin()
 {
   M5.Lcd.fillScreen(TFT_BLACK);
   M5.Lcd.setTextColor(TFT_WHITE, TFT_BLACK);
-  M5.Lcd.setFreeFont(MIDFONT);
+  M5.Lcd.setTextSize(3);
   M5.Lcd.setCursor(0, 25);
   M5.Lcd.println("PROOF PIN");
   M5.Lcd.setCursor(100, 120);
   M5.Lcd.setTextColor(TFT_GREEN, TFT_BLACK); 
-  M5.Lcd.setFreeFont(BIGFONT);
+  M5.Lcd.setTextSize(4);
   M5.Lcd.println(randomPin);
 }
 
@@ -187,13 +178,13 @@ void inputScreen()
 {
   M5.Lcd.fillScreen(TFT_BLACK);
   M5.Lcd.setTextColor(TFT_WHITE, TFT_BLACK); // White characters on black background
-  M5.Lcd.setFreeFont(MIDFONT);
+  M5.Lcd.setTextSize(3);
   M5.Lcd.setCursor(0, 50);
   M5.Lcd.println("AMOUNT THEN #");
   M5.Lcd.setCursor(50, 220);
-  M5.Lcd.setFreeFont(SMALLFONT);
+  M5.Lcd.setTextSize(2);
   M5.Lcd.println("TO RESET PRESS *");
-  M5.Lcd.setFreeFont(MIDFONT);
+  M5.Lcd.setTextSize(3);
   M5.Lcd.setCursor(0, 130);
   M5.Lcd.print(String(currency) + ":");
 }
@@ -202,11 +193,10 @@ void logo()
 {
   M5.Lcd.fillScreen(TFT_BLACK);
   M5.Lcd.setTextColor(TFT_WHITE, TFT_BLACK); // White characters on black background
-  M5.Lcd.setFreeFont(BIGFONT);
-  M5.Lcd.setCursor(40, 120);  // To be compatible with Adafruit_GFX the cursor datum is always bottom left
+  M5.Lcd.setTextSize(5);
+  M5.Lcd.setCursor(40, 100);  // To be compatible with Adafruit_GFX the cursor datum is always bottom left
   M5.Lcd.print("LNURLPoS"); // Using tft.print means text background is NEVER rendered
-
-  M5.Lcd.setFreeFont(SMALLFONT);
+  M5.Lcd.setTextSize(2);
   M5.Lcd.setCursor(42, 140);          // To be compatible with Adafruit_GFX the cursor datum is always bottom left
   M5.Lcd.print("Powered by LNbits"); // Using tft.print means text background is NEVER rendered
 }
