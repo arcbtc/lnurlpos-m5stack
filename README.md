@@ -45,8 +45,6 @@ Fiatjafs incredible <a href="https://github.com/lnbits/lnbits/tree/master/lnbits
 
 > _Note: If using MacOS, you will need the CP210x USB to UART Bridge VCP Drivers available here https://www.silabs.com/developers/usb-to-uart-bridge-vcp-drivers_
 
-> _Note: You may need to roll your ESP32 boards back to an earlier version in the Arduino IDE, by using tools>boards>boards manager, searching for esp. I use v1.0.5(rc6), and have also used v1.0.4 which worked._
-
 ### LNbits extension
 
 To make things easy (usually a few clicks on things like Raspiblitz), there is an <a href="https://github.com/lnbits/lnbits/tree/master/lnbits/extensions/lnurlpos">LNbits extension</a>.
@@ -140,4 +138,3 @@ When an amount is entered into the LNURLPoS, the device generates a unique pin, 
 When that first GET request happens from the wallet, the LNURL server can find the PoS record, fetch its secret use the secret to decrypt the amount+pin. The amount is converted from the fiat currency to sats, and sent back to the wallet as `minSendable` and `maxSendable`.
 
 If the invoice passed to the wallet is paid the customer is given access to the decrypted pin.
-

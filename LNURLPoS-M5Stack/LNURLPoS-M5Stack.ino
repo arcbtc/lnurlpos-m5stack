@@ -16,9 +16,9 @@
 ////////CHANGE! USE LNURLPoS EXTENSION IN LNBITS////////
 ////////////////////////////////////////////////////////
 
-String baseURL = "https://legend.lnbits.com/lnurlpos/api/v1/lnurl/AHexgMN3VJjx6BBdzeNhqN";
-String key = "4HHZjKg4Rb867CbiCD9H7e";
-String currency = "USD";
+String baseURL = "https://legend.lnbits.com/lnurlpos/api/v1/lnurl/3HyPVhsCrGYAbteugGikpn";
+String key = "CHiPUeWTjdXXy24xrMQPuM";
+String currency = "EUR";
 
 //CHANGE TO HIGHER IF USING TOR
 int QRCodeComplexity = 8;
